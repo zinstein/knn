@@ -108,7 +108,7 @@ print(predictions_labels)
 print('算法评价:')
 print((classification_report(y_test, predictions_labels)))
 
-# 输出前10张图片及预测结果
+# 输出前100张图片及预测结果
 k = 0
 while k < 100:
     # 读取图像
