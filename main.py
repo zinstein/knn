@@ -81,8 +81,8 @@ XX_test_lda = lda.transform(XX_test_pca)
 # 求最佳k和p值
 def searchBestPar():
     bestScore = 0
-    bestK = 1
-    bestP = 1
+    bestK = 0
+    bestP = 0
     # for k in range(1, 10):
     #     clf = KNeighborsClassifier(n_neighbors=k, weights="uniform").fit(XX_train, y_train)
     #     scor = clf.score(XX_test,y_test)
@@ -93,7 +93,6 @@ def searchBestPar():
         for p in range(1, 10):
             clf = KNeighborsClassifier(n_neighbors=k, weights="distance", p=p).fit(XX_train_lda, Y_train)
             scor = clf.score(XX_test_lda, Y_test)
-            print(str(k) + " " + str(p) + ":" + str(scor))
             if scor > bestScore:
                 bestScore = scor
                 bestK = k
@@ -145,7 +144,7 @@ cm = confusion_matrix(y_true, y_pred)
 np.set_printoptions(precision=2)
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 print(cm_normalized)
-plt.figure(figsize=(12, 8), dpi=120)
+plt.figure(figsize=(8, 6), dpi=120)
 
 ind_array = np.arange(len(labels))
 x, y = np.meshgrid(ind_array, ind_array)
