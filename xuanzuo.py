@@ -9,6 +9,7 @@ from keras.utils import pad_sequences
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix
 
 stop_list = pd.read_csv("cn_stopwords.txt", index_col=False, quoting=3, sep="\t", names=['stopword'], encoding='utf-8')
 
@@ -83,12 +84,47 @@ predictions_labels = clf.predict(X_test)
 print('算法评价:')
 print((classification_report(Y_test, predictions_labels)))
 
-# k = 0
-# while k < 100:
-#     print(X_test[k])
-#     print(predictions_labels[k])
-#     k = k + 1
+labels = [1, 2, 3, 4, 5]
+y_true = Y_test  # 正确标签
+y_pred = predictions_labels  # 预测标签
+tick_marks = np.array(range(len(labels))) + 0.5
 
+
+def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    xlocations = np.array(range(len(labels)))
+    plt.xticks(xlocations, labels, rotation=90)
+    plt.yticks(xlocations, labels)
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+
+cm = confusion_matrix(y_true, y_pred)
+np.set_printoptions(precision=2)
+cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+print(cm_normalized)
+plt.figure(figsize=(6, 4), dpi=120)
+
+ind_array = np.arange(len(labels))
+x, y = np.meshgrid(ind_array, ind_array)
+
+for x_val, y_val in zip(x.flatten(), y.flatten()):
+    c = cm_normalized[y_val][x_val]
+    if c > 0.01:
+        plt.text(x_val, y_val, "%0.2f" % (c,), color='red', fontsize=7, va='center', ha='center')
+
+plt.gca().set_xticks(tick_marks, minor=True)
+plt.gca().set_yticks(tick_marks, minor=True)
+plt.gca().xaxis.set_ticks_position('none')
+plt.gca().yaxis.set_ticks_position('none')
+plt.grid(True, which='minor', linestyle='-')
+plt.gcf().subplots_adjust(bottom=0.15)
+
+plot_confusion_matrix(cm_normalized, title='Normalized confusion matrix')
+plt.savefig('matrix.png', format='png')
+plt.show()
 
 # precision ( 精确度)：正确预测为正的，占全部预测为正的比例。
 # recall（召回率）：正确预测为正的，占全部实际为正的比例。
