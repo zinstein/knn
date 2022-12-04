@@ -28,7 +28,7 @@ X = np.array(X)
 Y = np.array(Y)
 
 # 随机率为100% 选取其中的20%作为测试集
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 
 print(len(X_train), len(X_test), len(y_train), len(y_test))
 
